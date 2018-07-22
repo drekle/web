@@ -1,6 +1,9 @@
-FROM hypriot/rpi-python
-WORKDIR /
-ADD . /
-ADD mime.types /usr/local/etc/mime.types
+FROM golang:latest AS build
+WORKDIR /build
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -installsuffix cgo -o web .
+
+FROM scratch
+COPY --from build /build/web /
 EXPOSE 80
-ENTRYPOINT ["python", "-m", "SimpleHTTPServer", "80"]
+ENTRYPOINT ["/web"]
