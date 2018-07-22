@@ -4,6 +4,6 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -a -installsuffix cgo -o web .
 
 FROM scratch
-COPY --from build /build/web /
+COPY --from=build /build/web /
 EXPOSE 80
 ENTRYPOINT ["/web"]
